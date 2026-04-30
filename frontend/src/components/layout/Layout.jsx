@@ -24,15 +24,17 @@ export default function Layout() {
   const initials = user?.name?.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'M'
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: 'var(--night)', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100vh', background: '#F6FAF8', overflow: 'hidden' }}>
       {/* Sidebar */}
       <aside style={{
-        width: 64, background: 'rgba(255,255,255,0.02)', borderRight: '0.5px solid var(--rim)',
+        width: 64, background: '#fff',
+        borderRight: '1px solid var(--rim)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0',
-        gap: 4, flexShrink: 0, position: 'relative', zIndex: 10
+        gap: 4, flexShrink: 0, position: 'relative', zIndex: 10,
+        boxShadow: '2px 0 12px rgba(5,150,105,0.04)',
       }}>
         {/* Logo */}
-        <div style={{ width: 36, height: 36, borderRadius: 11, background: 'linear-gradient(135deg,var(--violet),var(--indigo))', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, boxShadow: '0 4px 16px rgba(124,108,240,0.3)', flexShrink: 0, animation: 'float 4s ease-in-out infinite' }}>
+        <div style={{ width: 36, height: 36, borderRadius: 11, background: 'linear-gradient(135deg,#059669,#0D9488)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, boxShadow: '0 4px 16px rgba(5,150,105,0.30)', flexShrink: 0, animation: 'float 4s ease-in-out infinite' }}>
           <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
             <path d="M3 14L7 8L11 11L17 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <circle cx="17" cy="4" r="2" fill="#fff"/>
@@ -50,11 +52,11 @@ export default function Layout() {
               {tooltip === label && (
                 <div style={{
                   position: 'absolute', left: 52, top: '50%', transform: 'translateY(-50%)',
-                  background: 'rgba(20,20,32,0.95)', border: '0.5px solid var(--rim2)',
+                  background: '#fff', border: '1px solid var(--rim)',
                   borderRadius: 8, padding: '6px 12px', fontSize: 12, color: 'var(--text)',
-                  whiteSpace: 'nowrap', zIndex: 100, backdropFilter: 'blur(16px)',
+                  whiteSpace: 'nowrap', zIndex: 100,
                   animation: 'fadeIn 0.15s ease',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.5)'
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
                 }}>
                   {label}
                 </div>
@@ -69,13 +71,13 @@ export default function Layout() {
         <NavLink to="/profile" style={{ marginBottom: 8, textDecoration: 'none' }}>
           <div style={{
             width: 32, height: 32, borderRadius: '50%', overflow: 'hidden',
-            border: '1.5px solid rgba(124,108,240,0.4)',
-            boxShadow: '0 0 0 3px rgba(124,108,240,0.1)',
-            transition: 'all 0.2s'
+            border: '1.5px solid rgba(5,150,105,0.35)',
+            boxShadow: '0 0 0 3px rgba(5,150,105,0.08)',
+            transition: 'all 0.2s',
           }}>
             {user?.avatar_url
               ? <img src={user.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,var(--violet),var(--indigo))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#fff' }}>{initials}</div>
+              : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#059669,#0D9488)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#fff' }}>{initials}</div>
             }
           </div>
         </NavLink>
@@ -84,10 +86,10 @@ export default function Layout() {
         <button onClick={logout} style={{
           width: 36, height: 36, borderRadius: 10, background: 'transparent', border: 'none',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'rgba(255,255,255,0.2)', transition: 'all 0.2s'
+          color: 'rgba(0,0,0,0.25)', transition: 'all 0.2s', cursor: 'pointer',
         }}
           onMouseEnter={e => { e.currentTarget.style.color = 'var(--rose)'; e.currentTarget.style.background = 'var(--rose2)' }}
-          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.2)'; e.currentTarget.style.background = 'transparent' }}>
+          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(0,0,0,0.25)'; e.currentTarget.style.background = 'transparent' }}>
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
             <path d="M13 3h4v14h-4M8 7l-4 3 4 3M4 10h9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -95,7 +97,7 @@ export default function Layout() {
       </aside>
 
       {/* Main */}
-      <main style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+      <main style={{ flex: 1, overflowY: 'auto', position: 'relative', background: '#F6FAF8' }}>
         <Outlet />
       </main>
     </div>

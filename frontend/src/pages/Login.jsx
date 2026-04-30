@@ -36,10 +36,10 @@ export default function Login() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--night)', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', background: '#F6FAF8', position: 'relative', overflow: 'hidden' }}>
       {/* Orbs */}
-      <div className="orb" style={{ width: 500, height: 500, background: 'radial-gradient(circle,rgba(124,108,240,0.18),transparent)', top: '-100px', left: '-100px' }} />
-      <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle,rgba(0,212,170,0.1),transparent)', bottom: '-80px', right: '40%' }} />
+      <div className="orb" style={{ width: 600, height: 600, background: 'radial-gradient(circle,rgba(5,150,105,0.10),transparent)', top: '-150px', left: '-150px' }} />
+      <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle,rgba(13,148,136,0.07),transparent)', bottom: '-80px', right: '35%' }} />
 
       {/* Left panel */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 80px', position: 'relative', zIndex: 1 }}
@@ -48,33 +48,33 @@ export default function Login() {
           style={{ transitionDelay: '100ms' }}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 56 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 14, background: 'linear-gradient(135deg,var(--violet),var(--indigo))', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(124,108,240,0.35)' }}>
+            <div style={{ width: 44, height: 44, borderRadius: 14, background: 'linear-gradient(135deg,#059669,#0D9488)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(5,150,105,0.30)' }}>
               <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
                 <path d="M3 14L7 8L11 11L17 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="17" cy="4" r="2" fill="#fff"/>
               </svg>
             </div>
             <div>
-              <span className="syne" style={{ fontSize: 22, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.5px' }}>margin</span>
-              <span style={{ fontSize: 11, marginLeft: 6, padding: '2px 7px', borderRadius: 6, background: 'var(--violet3)', color: 'var(--violet2)', fontWeight: 500 }}>AI</span>
+              <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.5px' }}>margin</span>
+              <span style={{ fontSize: 11, marginLeft: 6, padding: '2px 7px', borderRadius: 6, background: 'rgba(5,150,105,0.10)', color: '#059669', fontWeight: 600 }}>AI</span>
             </div>
           </div>
 
-          <h1 className="syne" style={{ fontSize: 52, fontWeight: 700, lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 16, color: 'var(--text)' }}>
+          <h1 style={{ fontSize: 52, fontWeight: 800, lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 16, color: 'var(--text)' }}>
             Know your<br/><span className="gradient-text">margin.</span>
           </h1>
-          <p style={{ fontSize: 17, color: 'var(--muted)', marginBottom: 56, lineHeight: 1.6, fontWeight: 300 }}>
+          <p style={{ fontSize: 17, color: 'var(--muted)', marginBottom: 56, lineHeight: 1.6, fontWeight: 400 }}>
             Income − Savings = what you're<br/>allowed to spend. Nothing more.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {features.map((f, i) => (
-              <div key={f.label} className={`transition-all duration-500`}
+              <div key={f.label} className="transition-all duration-500"
                 style={{ transitionDelay: `${200 + i * 80}ms`, opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateX(-12px)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--violet3)', border: '0.5px solid rgba(124,108,240,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--violet2)', fontSize: 16, flexShrink: 0 }}>{f.icon}</div>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(5,150,105,0.09)', border: '1px solid rgba(5,150,105,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669', fontSize: 16, flexShrink: 0 }}>{f.icon}</div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)', marginBottom: 1 }}>{f.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 1 }}>{f.label}</div>
                     <div style={{ fontSize: 12, color: 'var(--muted)' }}>{f.desc}</div>
                   </div>
                 </div>
@@ -90,21 +90,21 @@ export default function Login() {
           style={{ transitionDelay: '200ms' }}>
           {/* Mobile logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40, justifyContent: 'center' }} className="md:hidden">
-            <div style={{ width: 36, height: 36, borderRadius: 11, background: 'linear-gradient(135deg,var(--violet),var(--indigo))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, borderRadius: 11, background: 'linear-gradient(135deg,#059669,#0D9488)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 14L7 8L11 11L17 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="17" cy="4" r="2" fill="#fff"/></svg>
             </div>
-            <span className="syne" style={{ fontSize: 20, fontWeight: 600 }}>margin <span style={{ color: 'var(--muted)', fontSize: 14 }}>AI</span></span>
+            <span style={{ fontSize: 20, fontWeight: 700 }}>margin <span style={{ color: 'var(--muted)', fontSize: 14, fontWeight: 400 }}>AI</span></span>
           </div>
 
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid var(--rim)', borderRadius: 24, padding: 36, backdropFilter: 'blur(40px)' }}>
+          <div style={{ background: '#fff', border: '1px solid var(--rim)', borderRadius: 24, padding: 36, boxShadow: '0 8px 40px rgba(5,150,105,0.08)' }}>
             {/* Tab toggle */}
-            <div style={{ display: 'flex', gap: 4, padding: 4, background: 'rgba(255,255,255,0.04)', borderRadius: 14, marginBottom: 32 }}>
+            <div style={{ display: 'flex', gap: 4, padding: 4, background: 'var(--surface)', borderRadius: 14, marginBottom: 32 }}>
               {['login', 'register'].map(m => (
                 <button key={m} onClick={() => setMode(m)} style={{
-                  flex: 1, padding: '10px 0', borderRadius: 11, fontSize: 13, fontWeight: 500, transition: 'all 0.2s', border: 'none',
-                  background: mode === m ? 'linear-gradient(135deg,var(--violet),var(--indigo))' : 'transparent',
+                  flex: 1, padding: '10px 0', borderRadius: 11, fontSize: 13, fontWeight: 600, transition: 'all 0.2s', border: 'none', cursor: 'pointer',
+                  background: mode === m ? 'linear-gradient(135deg,#059669,#0D9488)' : 'transparent',
                   color: mode === m ? '#fff' : 'var(--muted)',
-                  boxShadow: mode === m ? '0 4px 16px rgba(124,108,240,0.3)' : 'none',
+                  boxShadow: mode === m ? '0 4px 16px rgba(5,150,105,0.28)' : 'none',
                 }}>
                   {m === 'login' ? 'Sign in' : 'Create account'}
                 </button>
@@ -114,21 +114,21 @@ export default function Login() {
             <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {mode === 'register' && (
                 <div>
-                  <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block' }}>Full name</label>
+                  <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block', fontWeight: 600 }}>Full name</label>
                   <input className="input-field" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Shriya Shetty" required />
                 </div>
               )}
               <div>
-                <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block' }}>Email</label>
+                <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block', fontWeight: 600 }}>Email</label>
                 <input className="input-field" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" required />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block' }}>Password</label>
+                <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block', fontWeight: 600 }}>Password</label>
                 <input className="input-field" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="••••••••" required />
               </div>
 
               {err && (
-                <div style={{ background: 'var(--rose2)', border: '0.5px solid rgba(242,92,122,0.3)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: 'var(--rose)' }}>
+                <div style={{ background: 'var(--rose2)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: 'var(--rose)' }}>
                   {err}
                 </div>
               )}

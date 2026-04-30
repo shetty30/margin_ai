@@ -1,13 +1,121 @@
-# Virtual environments
-venv/
-env/
-.venv/
-.env/
-
-# Python cache
+# ─── Python / Backend ───────────────────────────────────────────
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+.eggs/
+venv/
+.venv/
+env/
+ENV/
+.env.bak
 
-# Environment variables (important!)
+# ─── Environment / Secrets ──────────────────────────────────────
 .env
-.env.*
+.env.local
+.env.production
+.env.staging
+*.env
+secrets.json
+secrets.yaml
+
+# ─── Database ───────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.sql.backup
+mysql_data/
+
+# ─── Uploads / User data ────────────────────────────────────────
+app/static/avatars/
+uploads/
+media/
+
+# ─── Logs ───────────────────────────────────────────────────────
+*.log
+logs/
+uvicorn.log
+access.log
+error.log
+
+# ─── Node / Frontend ────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+.pnp
+.pnp.js
+
+# ─── Build output ───────────────────────────────────────────────
+dist/
+build/
+.vite/
+*.local
+
+# ─── SCSS compiled output ───────────────────────────────────────
+*.css.map
+src/styles/compiled/
+
+# ─── OS files ───────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── VS Code ────────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+*.code-workspace
+
+# ─── IDE ────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ─── Testing ────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# ─── Jupyter (if you use it for analysis later) ─────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ─── Misc ───────────────────────────────────────────────────────
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+.temp/
+tmp/
