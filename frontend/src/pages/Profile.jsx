@@ -39,7 +39,7 @@ export default function Profile() {
 
   if (!user) return (
     <div style={{ padding: 28 }}>
-      {[1, 2, 3].map(i => <div key={i} style={{ height: 120, background: 'var(--glass)', borderRadius: 16, border: '0.5px solid var(--rim)', marginBottom: 12 }} />)}
+      {[1, 2, 3].map(i => <div key={i} style={{ height: 120, background: 'rgba(5,150,105,0.04)', borderRadius: 16, border: '1px solid var(--rim)', marginBottom: 12 }} />)}
     </div>
   )
 
@@ -49,17 +49,17 @@ export default function Profile() {
 
   return (
     <div style={{ padding: 28, maxWidth: 720, position: 'relative' }}>
-      <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle,rgba(0,212,170,0.06),transparent)', top: -100, right: -80 }} />
+      <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle,rgba(5,150,105,0.06),transparent)', top: -100, right: -80 }} />
 
       {toast && (
-        <div className="scale-in" style={{ position: 'fixed', top: 24, right: 24, background: 'rgba(0,212,170,0.15)', border: '0.5px solid rgba(0,212,170,0.3)', borderRadius: 12, padding: '12px 20px', fontSize: 13, color: 'var(--teal)', zIndex: 1000, backdropFilter: 'blur(20px)' }}>
+        <div className="scale-in" style={{ position: 'fixed', top: 24, right: 24, background: 'rgba(5,150,105,0.1)', border: '1px solid rgba(5,150,105,0.25)', borderRadius: 12, padding: '12px 20px', fontSize: 13, color: '#059669', zIndex: 1000, boxShadow: '0 4px 16px rgba(5,150,105,0.12)' }}>
           {toast}
         </div>
       )}
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         <div className="fade-up" style={{ marginBottom: 24 }}>
-          <h1 className="syne" style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-1px' }}>Profile</h1>
+          <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-1px' }}>Profile</h1>
         </div>
 
         {/* Profile card */}
@@ -67,16 +67,17 @@ export default function Profile() {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
             {/* Avatar */}
             <div style={{ position: 'relative', flexShrink: 0 }}>
-              <div style={{ width: 80, height: 80, borderRadius: 22, overflow: 'hidden', border: '2px solid rgba(124,108,240,0.4)', boxShadow: '0 0 0 4px rgba(124,108,240,0.08)' }}>
+              <div style={{ width: 80, height: 80, borderRadius: 22, overflow: 'hidden', border: '2px solid rgba(5,150,105,0.35)', boxShadow: '0 0 0 4px rgba(5,150,105,0.08)' }}>
                 {user.avatar_url
                   ? <img src={user.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,var(--violet),var(--indigo))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 600, color: '#fff', fontFamily: 'Syne' }}>{initials}</div>
+                  : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#059669,#0D9488)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, color: '#fff' }}>{initials}</div>
                 }
               </div>
               <button onClick={() => fileRef.current?.click()} disabled={avatarLoading} style={{
                 position: 'absolute', bottom: -4, right: -4, width: 26, height: 26, borderRadius: '50%',
-                background: 'linear-gradient(135deg,var(--violet),var(--indigo))', border: '2px solid var(--night)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+                background: 'linear-gradient(135deg,#059669,#0D9488)', border: '2px solid #fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(5,150,105,0.3)',
               }}>
                 {avatarLoading
                   ? <div style={{ width: 10, height: 10, border: '1.5px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
@@ -89,9 +90,9 @@ export default function Profile() {
             <div style={{ flex: 1 }}>
               {editing ? (
                 <input value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })}
-                  style={{ background: 'transparent', border: 'none', borderBottom: '1px solid rgba(124,108,240,0.4)', outline: 'none', fontSize: 20, fontWeight: 600, color: 'var(--text)', fontFamily: 'Syne', marginBottom: 4, width: '100%', paddingBottom: 4 }} />
+                  style={{ background: 'transparent', border: 'none', borderBottom: '1px solid rgba(5,150,105,0.4)', outline: 'none', fontSize: 20, fontWeight: 700, color: 'var(--text)', marginBottom: 4, width: '100%', paddingBottom: 4 }} />
               ) : (
-                <h2 className="syne" style={{ fontSize: 22, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>{user.name}</h2>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>{user.name}</h2>
               )}
               <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{user.email}</p>
               {!editing && user.occupation && <p style={{ fontSize: 13, color: 'var(--muted)' }}>{user.occupation}{user.city ? ` · ${user.city}` : ''}</p>}
@@ -115,10 +116,13 @@ export default function Profile() {
                 </>
               ) : (
                 <button onClick={() => setEditing(true)} style={{
-                  width: 36, height: 36, borderRadius: 10, background: 'var(--violet3)',
-                  border: '0.5px solid rgba(124,108,240,0.3)', color: 'var(--violet2)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
+                  width: 36, height: 36, borderRadius: 10, background: 'rgba(5,150,105,0.07)',
+                  border: '1px solid rgba(5,150,105,0.2)', color: '#059669',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(5,150,105,0.12)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(5,150,105,0.07)' }}>
                   <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M14 4l2 2-10 10H4v-2L14 4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
               )}
@@ -129,28 +133,28 @@ export default function Profile() {
         {/* Financial profile */}
         <div className="card fade-up" style={{ padding: 24, marginBottom: 16, animationDelay: '120ms' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h3 className="syne" style={{ fontSize: 16, fontWeight: 600 }}>Financial profile</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 700 }}>Financial profile</h3>
             <span className="pill pill-teal">{savingsRate}% savings rate</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 20 }}>
             {[
-              { label: 'Monthly income', value: editing ? null : fmt(user.monthly_income), field: 'monthly_income', color: 'var(--violet2)' },
-              { label: 'Savings target', value: editing ? null : fmt(user.savings_target), field: 'savings_target', color: 'var(--indigo)' },
-              { label: 'Your margin', value: fmt(budget), field: null, color: 'var(--teal)' },
+              { label: 'Monthly income', value: editing ? null : fmt(user.monthly_income), field: 'monthly_income', color: '#059669' },
+              { label: 'Savings target', value: editing ? null : fmt(user.savings_target), field: 'savings_target', color: '#0D9488' },
+              { label: 'Your margin', value: fmt(budget), field: null, color: '#2563EB' },
             ].map(s => (
-              <div key={s.label} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 12, padding: '14px 16px', textAlign: 'center' }}>
+              <div key={s.label} style={{ background: 'rgba(5,150,105,0.04)', borderRadius: 12, padding: '14px 16px', textAlign: 'center', border: '1px solid rgba(5,150,105,0.1)' }}>
                 <p style={{ fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 8 }}>{s.label}</p>
                 {editing && s.field ? (
                   <input type="number" value={form[s.field] || ''} onChange={e => setForm({ ...form, [s.field]: e.target.value })}
-                    style={{ background: 'transparent', border: 'none', borderBottom: `1px solid ${s.color}40`, outline: 'none', fontSize: 16, fontWeight: 600, color: s.color, fontFamily: 'Syne', textAlign: 'center', width: '100%', paddingBottom: 4 }} />
+                    style={{ background: 'transparent', border: 'none', borderBottom: `1px solid ${s.color}40`, outline: 'none', fontSize: 16, fontWeight: 700, color: s.color, textAlign: 'center', width: '100%', paddingBottom: 4 }} />
                 ) : (
-                  <p className="syne" style={{ fontSize: 17, fontWeight: 600, color: s.color }}>{s.value}</p>
+                  <p style={{ fontSize: 17, fontWeight: 700, color: s.color }}>{s.value}</p>
                 )}
               </div>
             ))}
           </div>
-          <div style={{ height: 4, background: 'var(--glass2)', borderRadius: 2, overflow: 'hidden', marginBottom: 6 }}>
-            <div style={{ height: '100%', background: 'linear-gradient(90deg,var(--violet),var(--teal))', borderRadius: 2, width: `${Math.min(savingsRate / 30 * 100, 100)}%`, transition: 'width 1.2s cubic-bezier(0.4,0,0.2,1)' }} />
+          <div style={{ height: 4, background: 'rgba(0,0,0,0.06)', borderRadius: 2, overflow: 'hidden', marginBottom: 6 }}>
+            <div style={{ height: '100%', background: 'linear-gradient(90deg,#059669,#0D9488)', borderRadius: 2, width: `${Math.min(savingsRate / 30 * 100, 100)}%`, transition: 'width 1.2s cubic-bezier(0.4,0,0.2,1)' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--faint)' }}>
             <span>0%</span><span>target 25%</span><span>30%+</span>
@@ -159,15 +163,15 @@ export default function Profile() {
 
         {/* Account info */}
         <div className="card fade-up" style={{ padding: 20, animationDelay: '180ms' }}>
-          <h3 className="syne" style={{ fontSize: 14, fontWeight: 600, marginBottom: 16 }}>Account</h3>
+          <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>Account</h3>
           {[
             { label: 'Member since', value: new Date(user.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) },
             { label: 'AI stack', value: 'Groq llama-3.1-8b + Gemini Flash' },
             { label: 'Status', value: user.onboarded ? 'Active' : 'Setup incomplete' },
           ].map((row, i) => (
-            <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 0', borderBottom: i < 2 ? '0.5px solid var(--rim)' : 'none' }}>
+            <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 0', borderBottom: i < 2 ? '1px solid var(--rim)' : 'none' }}>
               <span style={{ fontSize: 13, color: 'var(--muted)' }}>{row.label}</span>
-              <span style={{ fontSize: 13, color: 'var(--text)' }}>{row.value}</span>
+              <span style={{ fontSize: 13, color: 'var(--text)', fontWeight: 500 }}>{row.value}</span>
             </div>
           ))}
         </div>
