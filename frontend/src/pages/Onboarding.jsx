@@ -1,76 +1,139 @@
+// Onboarding.jsx
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { profile } from '../api/client'
+import { profile as profileApi } from '../api/client'
 
-const steps = [
-  { id: 0, title: "What's your monthly income?", sub: "Your take-home salary or freelance income", field: "monthly_income", type: "number", placeholder: "65000", prefix: "₹" },
-  { id: 1, title: "How much do you want to save?", sub: "This amount is protected first. You spend what's left.", field: "savings_target", type: "number", placeholder: "15000", prefix: "₹" },
-  { id: 2, title: "A bit about you", sub: "Optional — helps personalise your experience", multi: true },
+const STEPS = [
+  { title: 'Welcome', sub: "Let's set up your financial profile" },
+  { title: 'Income', sub: 'Your take-home pay this month' },
+  { title: 'Savings', sub: 'This gets protected first, every month' },
+  { title: "You're set", sub: 'Your margin is ready' },
 ]
 
 export default function Onboarding() {
   const [step, setStep] = useState(0)
-  const [data, setData] = useState({ monthly_income:'', savings_target:'', phone:'', city:'', occupation:'' })
+  const [form, setForm] = useState({ city: '', occupation: '', monthly_income: '', savings_target: '' })
   const [loading, setLoading] = useState(false)
   const nav = useNavigate()
+  const user = JSON.parse(localStorage.getItem('margin_user') || '{}')
+  const income = parseFloat(form.monthly_income) || 0
+  const savings = parseFloat(form.savings_target) || 0
+  const margin = income - savings
+  const savRate = income > 0 ? Math.round(savings / income * 100) : 0
 
-  const budget = data.monthly_income && data.savings_target
-    ? Number(data.monthly_income) - Number(data.savings_target)
-    : null
+  const canNext = () => {
+    if (step === 1) return form.monthly_income && income > 0
+    if (step === 2) return form.savings_target && savings > 0 && savings < income
+    return true
+  }
 
   const next = async () => {
-    if (step < steps.length - 1) { setStep(s => s+1); return }
+    if (step < 3) { setStep(s => s + 1); return }
     setLoading(true)
     try {
-      await profile.update({ ...data, monthly_income: Number(data.monthly_income), savings_target: Number(data.savings_target) })
+      await profileApi.onboard({ city: form.city, occupation: form.occupation, monthly_income: income, savings_target: savings })
       nav('/')
-    } catch(e) { console.error(e) }
+    } catch (e) { alert(e.response?.data?.detail || 'Error') }
     finally { setLoading(false) }
   }
 
-  const cur = steps[step]
-
   return (
-    <div className="min-h-screen bg-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        <div className="flex gap-1.5 mb-8">
-          {steps.map((_,i)=>(
-            <div key={i} className="flex-1 h-1 rounded-full transition-all duration-500" style={{background: i<=step ? 'linear-gradient(90deg,#6c5ce7,#0984e3)' : 'rgba(255,255,255,0.08)'}}/>
+    <div style={{ minHeight: '100vh', background: 'var(--night)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
+      <div className="orb" style={{ width: 600, height: 600, background: 'radial-gradient(circle,rgba(124,108,240,0.12),transparent)', top: -200, right: -100 }} />
+      <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle,rgba(0,212,170,0.08),transparent)', bottom: -100, left: -50 }} />
+
+      <div style={{ width: '100%', maxWidth: 480, position: 'relative', zIndex: 1 }}>
+        {/* Progress */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 40 }}>
+          {STEPS.map((_, i) => (
+            <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, overflow: 'hidden', background: 'var(--glass2)' }}>
+              <div style={{ height: '100%', background: 'linear-gradient(90deg,var(--violet),var(--teal))', width: i <= step ? '100%' : '0%', transition: 'width 0.5s cubic-bezier(0.4,0,0.2,1)' }} />
+            </div>
           ))}
         </div>
-        <AnimatePresence mode="wait">
-          <motion.div key={step} initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}} transition={{duration:0.25}}>
-            <p className="text-white/40 text-xs uppercase tracking-widest mb-2">Step {step+1} of {steps.length}</p>
-            <h2 className="text-xl font-medium text-white mb-1">{cur.title}</h2>
-            <p className="text-white/30 text-sm mb-6">{cur.sub}</p>
-            {cur.multi ? (
-              <div className="space-y-3">
-                {[['phone','Phone number','9876543210'],['city','Your city','Mumbai'],['occupation','Occupation','Software Engineer']].map(([f,pl,ex])=>(
-                  <input key={f} value={data[f]} onChange={e=>setData({...data,[f]:e.target.value})} placeholder={pl} className="w-full rounded-xl px-4 py-3 text-sm text-white" style={{background:'rgba(255,255,255,0.05)',border:'0.5px solid rgba(255,255,255,0.1)'}}/>
-                ))}
-              </div>
-            ) : (
+
+        <div key={step} className="fade-up">
+          {/* Step indicator */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg,var(--violet),var(--indigo))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600, color: '#fff' }}>{step + 1}</div>
+            <span style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px' }}>Step {step + 1} of {STEPS.length}</span>
+          </div>
+
+          <h1 className="syne" style={{ fontSize: 36, fontWeight: 700, letterSpacing: '-1px', color: 'var(--text)', marginBottom: 6 }}>{STEPS[step].title}</h1>
+          <p style={{ fontSize: 15, color: 'var(--muted)', marginBottom: 32, fontWeight: 300 }}>{STEPS[step].sub}</p>
+
+          {step === 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-3" style={{background:'rgba(255,255,255,0.05)',border:'0.5px solid rgba(255,255,255,0.1)'}}>
-                  <span className="text-white/40 text-base">{cur.prefix}</span>
-                  <input type={cur.type} value={data[cur.field]} onChange={e=>setData({...data,[cur.field]:e.target.value})} placeholder={cur.placeholder} className="flex-1 bg-transparent text-xl font-medium text-white"/>
-                </div>
-                {budget !== null && step === 1 && (
-                  <motion.div initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} className="rounded-xl p-4" style={{background:'rgba(0,184,148,0.08)',border:'0.5px solid rgba(0,184,148,0.25)'}}>
-                    <p className="text-xs text-green/70 mb-1">Your expense budget</p>
-                    <p className="text-2xl font-medium" style={{color:'#00b894'}}>₹{budget.toLocaleString('en-IN')}</p>
-                    <p className="text-xs text-white/30 mt-1">This is what you're allowed to spend each month</p>
-                  </motion.div>
-                )}
+                <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block' }}>City (optional)</label>
+                <input className="input-field" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder="Mumbai" />
               </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-        <button onClick={next} disabled={loading || (!cur.multi && !data[cur.field])} className="w-full py-3 rounded-xl text-sm font-medium text-white mt-6 disabled:opacity-40 hover:opacity-90 transition-opacity" style={{background:'linear-gradient(135deg,#6c5ce7,#0984e3)'}}>
-          {loading ? 'Saving...' : step === steps.length-1 ? 'Start using Margin AI →' : 'Continue →'}
+              <div>
+                <label style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6, display: 'block' }}>What do you do?</label>
+                <input className="input-field" value={form.occupation} onChange={e => setForm({ ...form, occupation: e.target.value })} placeholder="Finance Student" />
+              </div>
+            </div>
+          )}
+
+          {step === 1 && (
+            <div>
+              <div style={{ position: 'relative' }}>
+                <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', fontSize: 18, fontWeight: 300 }}>₹</span>
+                <input className="input-field" type="number" value={form.monthly_income} onChange={e => setForm({ ...form, monthly_income: e.target.value })}
+                  style={{ paddingLeft: 36, fontSize: 24, fontWeight: 500, height: 64 }} placeholder="65,000" />
+              </div>
+              {income > 0 && <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 8 }}>₹{income.toLocaleString('en-IN')} per month</p>}
+            </div>
+          )}
+
+          {step === 2 && (
+            <div>
+              <div style={{ position: 'relative' }}>
+                <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', fontSize: 18, fontWeight: 300 }}>₹</span>
+                <input className="input-field" type="number" value={form.savings_target} onChange={e => setForm({ ...form, savings_target: e.target.value })}
+                  style={{ paddingLeft: 36, fontSize: 24, fontWeight: 500, height: 64 }} placeholder="15,000" />
+              </div>
+              {savings > 0 && income > 0 && (
+                <div style={{ marginTop: 16, background: 'var(--violet3)', border: '0.5px solid rgba(124,108,240,0.25)', borderRadius: 14, padding: '16px 18px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13 }}>
+                    <span style={{ color: 'var(--muted)' }}>Income</span>
+                    <span style={{ color: 'var(--text)' }}>₹{income.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, fontSize: 13 }}>
+                    <span style={{ color: 'var(--muted)' }}>Savings</span>
+                    <span style={{ color: 'var(--violet2)' }}>−₹{savings.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div style={{ height: '0.5px', background: 'rgba(124,108,240,0.2)', marginBottom: 12 }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 500 }}>
+                    <span style={{ color: 'var(--text)' }}>Your margin</span>
+                    <span className="gradient-text syne" style={{ fontSize: 18, fontWeight: 700 }}>₹{margin.toLocaleString('en-IN')}</span>
+                  </div>
+                  <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 6 }}>{savRate}% savings rate</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === 3 && (
+            <div style={{ textAlign: 'center', padding: '20px 0' }}>
+              <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--teal2)', border: '0.5px solid rgba(0,212,170,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: 28, animation: 'float 3s ease-in-out infinite' }}>✓</div>
+              <p style={{ fontSize: 16, color: 'var(--muted)', lineHeight: 1.7 }}>
+                Your margin is <span className="syne" style={{ color: 'var(--teal)', fontWeight: 600, fontSize: 18 }}>₹{margin.toLocaleString('en-IN')}/month</span><br/>
+                That's what you're allowed to spend.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <button className="btn-primary" onClick={next} disabled={!canNext() || loading}
+          style={{ width: '100%', marginTop: 32, padding: '16px', fontSize: 15, opacity: (!canNext() || loading) ? 0.5 : 1 }}>
+          {loading ? 'Setting up...' : step === 3 ? 'Open dashboard →' : 'Continue →'}
         </button>
-        {step > 0 && <button onClick={()=>setStep(s=>s-1)} className="w-full py-2 text-xs text-white/25 mt-2 hover:text-white/40 transition-colors">← Back</button>}
+        {step > 0 && (
+          <button onClick={() => setStep(s => s - 1)} style={{ width: '100%', marginTop: 10, padding: '10px', fontSize: 13, color: 'var(--faint)', background: 'transparent', border: 'none' }}>
+            ← Back
+          </button>
+        )}
       </div>
     </div>
   )

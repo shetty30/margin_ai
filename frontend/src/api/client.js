@@ -1,34 +1,50 @@
 import axios from 'axios'
+
 const api = axios.create({ baseURL: '/api' })
+
 api.interceptors.request.use(cfg => {
-  const t = localStorage.getItem('margin_token')
-  if (t) cfg.headers.Authorization = `Bearer ${t}`
+  const token = localStorage.getItem('margin_token')
+  if (token) cfg.headers.Authorization = `Bearer ${token}`
   return cfg
 })
+
 export default api
+
 export const auth = {
-  register: d => api.post('/auth/register', d),
-  login: d => api.post('/auth/login', d),
+  register: (d) => api.post('/auth/register', d),
+  login: (d) => api.post('/auth/login', d),
 }
+
 export const profile = {
-  get: () => api.get('/profile/me'),
-  update: d => api.patch('/profile/me', d),
-  uploadAvatar: f => { const fd = new FormData(); fd.append('file',f); return api.post('/profile/avatar',fd,{headers:{'Content-Type':'multipart/form-data'}}) },
-  deleteAvatar: () => api.delete('/profile/avatar'),
+  me: () => api.get('/profile/me'),
+  update: (d) => api.patch('/profile/me', d),
+  uploadAvatar: (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return api.post('/profile/me/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+  },
+  deleteAvatar: () => api.delete('/profile/me/avatar'),
+  onboard: (d) => api.post('/profile/me/onboard', d),
 }
-export const dashboard = { get: (y,m) => api.get(`/dashboard/?year=${y}&month=${m}`) }
+
+export const dashboard = {
+  get: (year, month) => api.get(`/dashboard/?year=${year}&month=${month}`),
+}
+
 export const transactions = {
-  list: (y,m) => api.get(`/transactions/?year=${y}&month=${m}`),
-  create: d => api.post('/transactions/', d),
-  delete: id => api.delete(`/transactions/${id}`),
-  parseSMS: t => api.post('/transactions/parse-sms',{sms_text:t}),
+  list: (year, month, catId) => api.get(`/transactions/?year=${year}&month=${month}${catId ? `&category_id=${catId}` : ''}`),
+  create: (d) => api.post('/transactions/', d),
+  delete: (id) => api.delete(`/transactions/${id}`),
+  parseSMS: (sms_text) => api.post('/transactions/parse-sms', { sms_text }),
 }
+
 export const goals = {
   list: () => api.get('/goals/'),
-  create: d => api.post('/goals/', d),
-  deposit: (id,a) => api.patch(`/goals/${id}/deposit?amount=${a}`),
+  create: (d) => api.post('/goals/', d),
+  deposit: (id, amount) => api.patch(`/goals/${id}/deposit?amount=${amount}`),
 }
+
 export const ai = {
-  chat: m => api.post('/ai/chat',{message:m}),
-  afford: q => api.post('/ai/afford',{question:q}),
+  chat: (message) => api.post('/ai/chat', { message }),
+  afford: (question) => api.post('/ai/afford', { question }),
 }

@@ -14,14 +14,14 @@ const isAuth = () => !!localStorage.getItem('margin_token')
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/onboarding" element={isAuth()?<Onboarding/>:<Navigate to="/login"/>}/>
-      <Route path="/" element={isAuth()?<Layout/>:<Navigate to="/login"/>}>
-        <Route index element={<Dashboard/>}/>
-        <Route path="transactions" element={<Transactions/>}/>
-        <Route path="goals" element={<Goals/>}/>
-        <Route path="chat" element={<Chat/>}/>
-        <Route path="profile" element={<Profile/>}/>
+      <Route path="/login" element={<Login />} />
+      <Route path="/onboarding" element={isAuth() ? <Onboarding /> : <Navigate to="/login" />} />
+      <Route path="/" element={isAuth() ? <Layout /> : <Navigate to="/login" />}>
+        <Route index element={<Dashboard />} />
+        <Route path="transactions" element={<Transactions />} />
+        <Route path="goals" element={<Goals />} />
+        <Route path="chat" element={<Chat />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
     </Routes>
   )
