@@ -12,19 +12,20 @@ export default api
 
 export const auth = {
   register: (d) => api.post('/auth/register', d),
-  login: (d) => api.post('/auth/login', d),
+  login:    (d) => api.post('/auth/login',    d),
 }
 
 export const profile = {
-  me: () => api.get('/profile/me'),
+  me:     ()  => api.get('/profile/me'),
   update: (d) => api.patch('/profile/me', d),
+  // onboard reuses PATCH /me — update_profile sets onboarded=1 when both income+savings present
+  onboard: (d) => api.patch('/profile/me', d),
   uploadAvatar: (file) => {
     const fd = new FormData()
     fd.append('file', file)
-    return api.post('/profile/me/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    return api.post('/profile/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
   },
-  deleteAvatar: () => api.delete('/profile/me/avatar'),
-  onboard: (d) => api.post('/profile/me/onboard', d),
+  deleteAvatar: () => api.delete('/profile/avatar'),
 }
 
 export const dashboard = {
@@ -32,19 +33,19 @@ export const dashboard = {
 }
 
 export const transactions = {
-  list: (year, month, catId) => api.get(`/transactions/?year=${year}&month=${month}${catId ? `&category_id=${catId}` : ''}`),
-  create: (d) => api.post('/transactions/', d),
-  delete: (id) => api.delete(`/transactions/${id}`),
-  parseSMS: (sms_text) => api.post('/transactions/parse-sms', { sms_text }),
+  list:     (year, month, catId) => api.get(`/transactions/?year=${year}&month=${month}${catId ? `&category_id=${catId}` : ''}`),
+  create:   (d)   => api.post('/transactions/', d),
+  delete:   (id)  => api.delete(`/transactions/${id}`),
+  parseSMS: (sms) => api.post('/transactions/parse-sms', { sms_text: sms }),
 }
 
 export const goals = {
-  list: () => api.get('/goals/'),
-  create: (d) => api.post('/goals/', d),
-  deposit: (id, amount) => api.patch(`/goals/${id}/deposit?amount=${amount}`),
+  list:    ()             => api.get('/goals/'),
+  create:  (d)            => api.post('/goals/', d),
+  deposit: (id, amount)   => api.patch(`/goals/${id}/deposit?amount=${amount}`),
 }
 
 export const ai = {
-  chat: (message) => api.post('/ai/chat', { message }),
+  chat:   (message)  => api.post('/ai/chat',   { message }),
   afford: (question) => api.post('/ai/afford', { question }),
 }
