@@ -107,7 +107,7 @@ nosetests.xml
 coverage.xml
 *.cover
 
-# ─── Jupyter (if you use it for analysis later) ─────────────────
+
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
