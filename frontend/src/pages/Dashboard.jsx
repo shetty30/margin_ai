@@ -59,6 +59,7 @@ const ACTIONS = [
 
 export default function Dashboard() {
   const [data,    setData]    = useState(null)
+  const [err,     setErr]     = useState(false)
   const [visible, setVisible] = useState(false)
   const [showBal, setShowBal] = useState(true)
   const now = new Date()
@@ -66,8 +67,18 @@ export default function Dashboard() {
   useEffect(() => {
     dashboard.get(now.getFullYear(), now.getMonth() + 1)
       .then(r => { setData(r.data); setTimeout(() => setVisible(true), 80) })
-      .catch(() => {})
+      .catch(() => setErr(true))
   }, [])
+
+  /* Error state */
+  if (err) return (
+    <div style={{ padding:28, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'60vh', gap:16 }}>
+      <div style={{ fontSize:40 }}>⚠️</div>
+      <p style={{ fontSize:16, fontWeight:700, color:'var(--text)' }}>Dashboard unavailable</p>
+      <p style={{ fontSize:13, color:'var(--muted)', textAlign:'center' }}>Backend may have restarted. Try refreshing the page.</p>
+      <button onClick={() => window.location.reload()} className="btn-primary" style={{ padding:'10px 24px', fontSize:13 }}>Refresh</button>
+    </div>
+  )
 
   /* Skeleton */
   if (!data) return (

@@ -15,16 +15,18 @@ async def chat(msg: str, ctx: dict) -> str:
     try:
         import google.generativeai as genai
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        m = genai.GenerativeModel("gemini-1.5-flash")
+        m = genai.GenerativeModel("gemini-2.0-flash")
         return m.generate_content(f"{build_context(ctx)}\n\nUser: {msg}").text
-    except Exception as e: return f"AI unavailable: {e}"
+    except Exception as e:
+        return f"AI unavailable: {e}"
 
 async def afford(question: str, ctx: dict) -> dict:
     try:
         import google.generativeai as genai, json
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        m = genai.GenerativeModel("gemini-1.5-flash")
+        m = genai.GenerativeModel("gemini-2.0-flash")
         p = f"""{build_context(ctx)}\n\nUser asks: {question}\nRespond ONLY as JSON: {{"verdict":"yes"or"no","headline":"one sentence","reasoning":"2-3 sentences with numbers","tradeoff":"what to adjust"}}"""
         t = m.generate_content(p).text.strip().replace("```json","").replace("```","").strip()
         return json.loads(t)
-    except Exception as e: return {"verdict":"unknown","headline":"AI unavailable","reasoning":str(e),"tradeoff":""}
+    except Exception as e:
+        return {"verdict":"unknown","headline":"AI unavailable","reasoning":str(e),"tradeoff":""}

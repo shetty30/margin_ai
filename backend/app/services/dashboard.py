@@ -28,7 +28,8 @@ def get_dashboard(db: Session, user: User, year: int, month: int) -> dict:
     cats = db.query(Category.id,Category.name,Category.color_hex,func.sum(Transaction.amount).label("total")).join(
         Transaction,Transaction.category_id==Category.id
     ).filter(Transaction.user_id==user.id,extract("year",Transaction.txn_date)==year,extract("month",Transaction.txn_date)==month
-    ).group_by(Category.id).order_by(func.sum(Transaction.amount).desc()).all()
+    ).group_by(Category.id).all()
+    cats = sorted(cats, key=lambda r: float(r.total or 0), reverse=True)  # sort by spend desc in Python
     daily = db.query(Transaction.txn_date,func.sum(Transaction.amount).label("t")).filter(
         Transaction.user_id==user.id,extract("year",Transaction.txn_date)==year,extract("month",Transaction.txn_date)==month
     ).group_by(Transaction.txn_date).order_by(Transaction.txn_date).all()
