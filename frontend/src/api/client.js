@@ -39,6 +39,10 @@ export const transactions = {
   parseSMS: (sms) => api.post('/transactions/parse-sms', { sms_text: sms }),
 }
 
+export const categories = {
+  list: () => api.get('/categories/'),
+}
+
 export const goals = {
   list:    ()             => api.get('/goals/'),
   create:  (d)            => api.post('/goals/', d),
