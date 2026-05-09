@@ -2,11 +2,29 @@ import axios from 'axios'
 
 const api = axios.create({ baseURL: '/api' })
 
+// Attach token to every request
 api.interceptors.request.use(cfg => {
   const token = localStorage.getItem('margin_token')
   if (token) cfg.headers.Authorization = `Bearer ${token}`
   return cfg
 })
+
+// Auto-logout on 401/403 — stale or expired token
+api.interceptors.response.use(
+  res => res,
+  err => {
+    const status = err.response?.status
+    if (status === 401 || status === 403) {
+      // Only clear + redirect if we have a token (i.e. this isn't a login attempt)
+      if (localStorage.getItem('margin_token')) {
+        localStorage.removeItem('margin_token')
+        localStorage.removeItem('margin_user')
+        window.location.href = '/login'
+      }
+    }
+    return Promise.reject(err)
+  }
+)
 
 export default api
 
@@ -16,9 +34,8 @@ export const auth = {
 }
 
 export const profile = {
-  me:     ()  => api.get('/profile/me'),
-  update: (d) => api.patch('/profile/me', d),
-  // onboard reuses PATCH /me — update_profile sets onboarded=1 when both income+savings present
+  me:      ()  => api.get('/profile/me'),
+  update:  (d) => api.patch('/profile/me', d),
   onboard: (d) => api.patch('/profile/me', d),
   uploadAvatar: (file) => {
     const fd = new FormData()
@@ -44,9 +61,9 @@ export const categories = {
 }
 
 export const goals = {
-  list:    ()             => api.get('/goals/'),
-  create:  (d)            => api.post('/goals/', d),
-  deposit: (id, amount)   => api.patch(`/goals/${id}/deposit?amount=${amount}`),
+  list:    ()           => api.get('/goals/'),
+  create:  (d)          => api.post('/goals/', d),
+  deposit: (id, amount) => api.patch(`/goals/${id}/deposit?amount=${amount}`),
 }
 
 export const ai = {

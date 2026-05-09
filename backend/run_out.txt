@@ -1,0 +1,2 @@
+INFO:     127.0.0.1:56954 - "POST /auth/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56957 - "POST /auth/login HTTP/1.1" 200 OK
