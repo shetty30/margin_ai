@@ -171,8 +171,7 @@ This project applies core personal finance concepts in code:
 
 ## Built by
 
-**Shriya Shetty** · Finance student  
-[GitHub](https://github.com/shetty30) · [LinkedIn](https://linkedin.com/in/yourprofile)
+**Shriya Shetty** 
 
 ---
 
