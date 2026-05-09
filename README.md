@@ -59,7 +59,5 @@ AI        →  Groq llama-3.1-8b · Gemini 1.5 Flash
 ---
 
 ## Built by
-Shriya Shetty
+**Shriya Shetty**
 
-**Shriya Shetty** · Finance Student  
-[GitHub](https://github.com/shetty30) · [LinkedIn](https://linkedin.com/in/yourprofile)
