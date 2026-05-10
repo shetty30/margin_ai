@@ -9,7 +9,7 @@ from app.db.database import get_db
 from app.models.user import User
 from app.models.transaction import Transaction
 from app.services.auth import get_current_user
-from app.services.ai_categoriser import parse_sms, categorise_groq
+from app.services.ai_categoriser import parse_sms, categorise_bert
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
 
@@ -47,5 +47,5 @@ def delete_txn(txn_id: int, db: Session=Depends(get_db), user: User=Depends(get_
 async def parse_sms_route(data: SMSIn, user: User=Depends(get_current_user)):
     r = parse_sms(data.sms_text)
     if r["parsed"] and r["category"]=="Misc" and r["merchant"]:
-        r["category"] = await categorise_groq(r["merchant"], float(r["amount"] or 0))
+        r["category"] = await categorise_bert(r["merchant"], float(r["amount"] or 0))
     return {**r, "raw_sms": data.sms_text}

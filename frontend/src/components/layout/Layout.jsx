@@ -149,9 +149,69 @@ export default function Layout() {
       </aside>
 
       {/* ── Main ─────────────────────────────────────────────── */}
-      <main style={{ flex: 1, overflowY: 'auto', position: 'relative', background: '#F4F2FF' }}>
-        <Outlet />
-      </main>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+        {/* Top header bar */}
+        <header style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+          padding: '14px 28px', gap: 14, flexShrink: 0,
+          background: 'rgba(255,255,255,0.72)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(124,58,237,0.08)',
+          boxShadow: '0 1px 12px rgba(124,58,237,0.05)',
+          position: 'sticky', top: 0, zIndex: 50,
+        }}>
+          {/* Current page greeting */}
+          <p style={{ fontSize: 13, color: '#71717A', fontWeight: 600, marginRight: 'auto' }}>
+            {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
+
+          {/* Notifications bell */}
+          <button style={{
+            width: 38, height: 38, borderRadius: 12,
+            background: 'rgba(124,58,237,0.06)',
+            border: '1px solid rgba(124,58,237,0.12)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', transition: 'all 0.18s', color: '#7C3AED',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background='rgba(124,58,237,0.12)'; e.currentTarget.style.transform='scale(1.05)' }}
+            onMouseLeave={e => { e.currentTarget.style.background='rgba(124,58,237,0.06)'; e.currentTarget.style.transform='scale(1)' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {/* Profile avatar chip */}
+          <NavLink to="/profile" style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '6px 14px 6px 6px',
+              background: 'rgba(124,58,237,0.06)',
+              border: '1px solid rgba(124,58,237,0.14)',
+              borderRadius: 40, cursor: 'pointer',
+              transition: 'all 0.18s',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(124,58,237,0.12)'; e.currentTarget.style.transform='scale(1.02)' }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(124,58,237,0.06)'; e.currentTarget.style.transform='scale(1)' }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
+                border: '2px solid rgba(124,58,237,0.30)',
+              }}>
+                {user?.avatar_url
+                  ? <img src={user.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#7C3AED,#A78BFA)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, color: '#fff' }}>{initials}</div>
+                }
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#18181B', whiteSpace: 'nowrap' }}>{user?.name?.split(' ')[0] || 'Profile'}</span>
+            </div>
+          </NavLink>
+        </header>
+
+        <main style={{ flex: 1, overflowY: 'auto', position: 'relative', background: '#F4F2FF' }}>
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }

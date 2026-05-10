@@ -28,9 +28,9 @@ def get_dashboard(db: Session, user: User, year: int, month: int) -> dict:
     cats = db.query(Category.id,Category.name,Category.color_hex,func.sum(Transaction.amount).label("total")).join(
         Transaction,Transaction.category_id==Category.id
     ).filter(Transaction.user_id==user.id,extract("year",Transaction.txn_date)==year,extract("month",Transaction.txn_date)==month
-    ).group_by(Category.id).all()
+    ).group_by(Category.id, Category.name, Category.color_hex).all()
     cats = sorted(cats, key=lambda r: float(r.total or 0), reverse=True)  # sort by spend desc in Python
-    daily = db.query(Transaction.txn_date,func.sum(Transaction.amount).label("t")).filter(
+    daily = db.query(Transaction.txn_date,func.sum(Transaction.amount).label("day_total")).filter(
         Transaction.user_id==user.id,extract("year",Transaction.txn_date)==year,extract("month",Transaction.txn_date)==month
     ).group_by(Transaction.txn_date).order_by(Transaction.txn_date).all()
     goals = db.query(Goal).filter(Goal.user_id==user.id,Goal.status=="active").all()
@@ -42,7 +42,7 @@ def get_dashboard(db: Session, user: User, year: int, month: int) -> dict:
         "savings_rate":round(savings/income*100,1) if income>0 else 0,
         "daily_avg":round(total_spent/days,2),
         "by_category":[{"id":r.id,"name":r.name,"color":r.color_hex,"total":float(r.total)} for r in cats],
-        "daily_spend":[{"day":str(r.txn_date),"total":float(r.t)} for r in daily],
+        "daily_spend":[{"day":str(r.txn_date),"total":float(r.day_total)} for r in daily],
         "goals":[{"title":g.title,"target":float(g.target_amount),"saved":float(g.saved_amount),"deadline":str(g.deadline),"emoji":g.emoji} for g in goals],
         "recent_txns":[{"merchant":t.merchant,"amount":float(t.amount),"date":str(t.txn_date)} for t in recent],
     }

@@ -65,7 +65,7 @@ export default function Dashboard() {
     <div style={{ padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70vh', gap: 16 }}>
       <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(239,68,68,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>⚠️</div>
       <p style={{ fontSize: 17, fontWeight: 700, color: '#18181B' }}>Dashboard unavailable</p>
-      <p style={{ fontSize: 13, color: '#71717A', textAlign: 'center', maxWidth: 300 }}>The backend may be offline. Make sure START_APP.bat is running, then refresh.</p>
+      <p style={{ fontSize: 13, color: '#71717A', textAlign: 'center', maxWidth: 300 }}>Unable to load your dashboard. Please make sure the backend server is running and try again.</p>
       <button onClick={() => window.location.reload()} className="btn-primary" style={{ padding: '11px 28px', fontSize: 14 }}>Refresh page</button>
     </div>
   )
@@ -81,13 +81,13 @@ export default function Dashboard() {
   const overBudget = remaining < 0
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 980 }}>
+    <div style={{ padding: '24px 32px', maxWidth: 980 }}>
 
       {/* ── Page header ─────────────────────────────────────── */}
-      <div className="fade-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+      <div className="fade-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
         <div>
-          <p style={{ fontSize: 12, color: '#A1A1AA', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 4 }}>{month}</p>
-          <h1 style={{ fontSize: 28, fontWeight: 900, color: '#18181B', letterSpacing: '-1px' }}>Dashboard</h1>
+          <p style={{ fontSize: 11, color: '#A1A1AA', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: 4 }}>{month}</p>
+          <h1 style={{ fontSize: 26, fontWeight: 900, color: '#18181B', letterSpacing: '-1px' }}>Overview</h1>
         </div>
         <Link to="/transactions">
           <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', fontSize: 13 }}>
