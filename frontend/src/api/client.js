@@ -66,6 +66,13 @@ export const goals = {
   deposit: (id, amount) => api.patch(`/goals/${id}/deposit?amount=${amount}`),
 }
 
+export const income = {
+  list:   (year, month) => api.get(`/transactions/?year=${year}&month=${month}`)
+    .then(r => ({ ...r, data: r.data.filter(t => parseFloat(t.amount) > 0) })),
+  create: (d) => api.post('/transactions/', { ...d, source: 'income' }),
+  delete: (id) => api.delete(`/transactions/${id}`),
+}
+
 export const ai = {
   chat:   (message)  => api.post('/ai/chat',   { message }),
   afford: (question) => api.post('/ai/afford', { question }),

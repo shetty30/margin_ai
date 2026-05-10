@@ -23,6 +23,14 @@ const NAV = [
     ),
   },
   {
+    to: '/income', label: 'Income',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
     to: '/goals', label: 'Goals',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -73,16 +81,16 @@ export default function Layout() {
 
       {/* ── Sidebar ─────────────────────────────────────────── */}
       <aside style={{
-        width: 230, flexShrink: 0,
+        width: 224, flexShrink: 0,
         background: '#fff',
         borderRight: '1px solid rgba(0,0,0,0.07)',
         display: 'flex', flexDirection: 'column',
-        padding: '24px 16px',
+        padding: '24px 16px 20px',
         boxShadow: '2px 0 20px rgba(124,58,237,0.04)',
       }}>
 
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36, paddingLeft: 4 }}>
+        {/* Logo — stays at top */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 4, marginBottom: 0 }}>
           <div style={{
             width: 36, height: 36, borderRadius: 11,
             background: 'linear-gradient(135deg,#7C3AED,#A78BFA)',
@@ -101,14 +109,17 @@ export default function Layout() {
           </div>
         </div>
 
-        {/* Nav */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 3, flex: 1 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: '#A1A1AA', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, paddingLeft: 14 }}>Menu</p>
+        {/* Spacer — pushes nav to bottom */}
+        <div style={{ flex: 1 }} />
+
+        {/* Nav — bottom half */}
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 20 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: '#C4C4CC', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, paddingLeft: 14 }}>Menu</p>
           {NAV.map(({ to, icon, label }) => {
             const isActive = to === '/' ? location.pathname === '/' : location.pathname.startsWith(to)
             return (
               <NavLink key={to} to={to} end={to === '/'} className={`nav-item ${isActive ? 'active' : ''}`}>
-                <span style={{ flexShrink: 0, opacity: isActive ? 1 : 0.6 }}>{icon}</span>
+                <span style={{ flexShrink: 0, opacity: isActive ? 1 : 0.55 }}>{icon}</span>
                 {label}
                 {isActive && <span className="nav-dot" />}
               </NavLink>
@@ -117,10 +128,10 @@ export default function Layout() {
         </nav>
 
         {/* Bottom: avatar + logout */}
-        <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
           <NavLink to="/profile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
             <div style={{
-              width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
+              width: 34, height: 34, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
               border: '2px solid rgba(124,58,237,0.30)',
               boxShadow: '0 0 0 3px rgba(124,58,237,0.08)',
             }}>
@@ -134,14 +145,14 @@ export default function Layout() {
               <p style={{ fontSize: 11, color: '#A1A1AA', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email || ''}</p>
             </div>
           </NavLink>
-          <button onClick={logout} style={{
-            width: 34, height: 34, borderRadius: 10, background: 'transparent', border: 'none',
+          <button onClick={logout} title="Sign out" style={{
+            width: 32, height: 32, borderRadius: 10, background: 'transparent', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#D4D4D8', transition: 'all 0.2s', cursor: 'pointer', flexShrink: 0,
           }}
             onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.08)' }}
             onMouseLeave={e => { e.currentTarget.style.color = '#D4D4D8'; e.currentTarget.style.background = 'transparent' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
               <path d="M16 3h4v18h-4M10 8l-5 4 5 4M5 12h13" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -162,12 +173,10 @@ export default function Layout() {
           boxShadow: '0 1px 12px rgba(124,58,237,0.05)',
           position: 'sticky', top: 0, zIndex: 50,
         }}>
-          {/* Current page greeting */}
           <p style={{ fontSize: 13, color: '#71717A', fontWeight: 600, marginRight: 'auto' }}>
             {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
 
-          {/* Notifications bell */}
           <button style={{
             width: 38, height: 38, borderRadius: 12,
             background: 'rgba(124,58,237,0.06)',
@@ -182,7 +191,6 @@ export default function Layout() {
             </svg>
           </button>
 
-          {/* Profile avatar chip */}
           <NavLink to="/profile" style={{ textDecoration: 'none' }}>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 10,

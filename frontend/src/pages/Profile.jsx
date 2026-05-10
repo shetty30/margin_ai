@@ -130,7 +130,7 @@ export default function Profile() {
             <div key={s.label} style={{ background: '#F4F2FF', borderRadius: 14, padding: '16px', textAlign: 'center', border: '1px solid rgba(124,58,237,0.08)' }}>
               <p style={{ fontSize: 10, color: '#A1A1AA', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10, fontWeight: 700 }}>{s.label}</p>
               {editing && s.field
-                ? <input type="number" value={form[s.field] || ''} onChange={e => setForm({ ...form, [s.field]: e.target.value })} style={{ background: 'transparent', border: 'none', borderBottom: `2px solid ${s.color}`, outline: 'none', fontSize: 17, fontWeight: 800, color: s.color, textAlign: 'center', width: '100%', paddingBottom: 4, fontFamily: 'Urbanist,sans-serif' }} />
+                ? <input type="number" value={form[s.field] ?? ''} onChange={e => setForm({ ...form, [s.field]: e.target.value })} style={{ background: 'transparent', border: 'none', borderBottom: `2px solid ${s.color}`, outline: 'none', fontSize: 17, fontWeight: 800, color: s.color, textAlign: 'center', width: '100%', paddingBottom: 4, fontFamily: 'Urbanist,sans-serif' }} />
                 : <p style={{ fontSize: 19, fontWeight: 900, color: s.color, letterSpacing: '-0.3px' }}>{s.value}</p>
               }
             </div>
