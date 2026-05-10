@@ -48,15 +48,6 @@ const NAV = [
       </svg>
     ),
   },
-  {
-    to: '/profile', label: 'Profile',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7"/>
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
-      </svg>
-    ),
-  },
 ]
 
 export default function Layout() {
@@ -89,74 +80,102 @@ export default function Layout() {
         boxShadow: '2px 0 20px rgba(124,58,237,0.04)',
       }}>
 
-        {/* Logo — stays at top */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 4, marginBottom: 0 }}>
+        {/* ── Logo ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 4 }}>
           <div style={{
-            width: 36, height: 36, borderRadius: 11,
+            width: 34, height: 34, borderRadius: 10,
             background: 'linear-gradient(135deg,#7C3AED,#A78BFA)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 16px rgba(124,58,237,0.30)',
-            flexShrink: 0,
+            boxShadow: '0 4px 14px rgba(124,58,237,0.28)', flexShrink: 0,
           }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
               <path d="M4 17L9 9L13 13L20 5" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
               <circle cx="20" cy="5" r="2" fill="#fff"/>
             </svg>
           </div>
           <div>
-            <span style={{ fontSize: 18, fontWeight: 800, color: '#18181B', letterSpacing: '-0.4px' }}>margin</span>
+            <span style={{ fontSize: 17, fontWeight: 800, color: '#18181B', letterSpacing: '-0.4px' }}>margin</span>
             <span style={{ fontSize: 10, marginLeft: 5, padding: '2px 6px', borderRadius: 5, background: 'rgba(124,58,237,0.10)', color: '#7C3AED', fontWeight: 700, letterSpacing: '0.4px' }}>AI</span>
           </div>
         </div>
 
-        {/* Spacer — pushes nav to bottom */}
-        <div style={{ flex: 1 }} />
+        {/* ── Profile card (top section) ── */}
+        <NavLink to="/profile" style={{ textDecoration: 'none', marginTop: 24 }}>
+          <div style={{
+            background: 'rgba(124,58,237,0.04)',
+            border: '1px solid rgba(124,58,237,0.12)',
+            borderRadius: 18, padding: '18px 14px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+            transition: 'all 0.2s', cursor: 'pointer',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background='rgba(124,58,237,0.08)'; e.currentTarget.style.borderColor='rgba(124,58,237,0.22)' }}
+            onMouseLeave={e => { e.currentTarget.style.background='rgba(124,58,237,0.04)'; e.currentTarget.style.borderColor='rgba(124,58,237,0.12)' }}>
 
-        {/* Nav — bottom half */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 20 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: '#C4C4CC', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, paddingLeft: 14 }}>Menu</p>
-          {NAV.map(({ to, icon, label }) => {
-            const isActive = to === '/' ? location.pathname === '/' : location.pathname.startsWith(to)
-            return (
-              <NavLink key={to} to={to} end={to === '/'} className={`nav-item ${isActive ? 'active' : ''}`}>
-                <span style={{ flexShrink: 0, opacity: isActive ? 1 : 0.55 }}>{icon}</span>
-                {label}
-                {isActive && <span className="nav-dot" />}
-              </NavLink>
-            )
-          })}
-        </nav>
-
-        {/* Bottom: avatar + logout */}
-        <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <NavLink to="/profile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
+            {/* Big avatar circle */}
             <div style={{
-              width: 34, height: 34, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
-              border: '2px solid rgba(124,58,237,0.30)',
-              boxShadow: '0 0 0 3px rgba(124,58,237,0.08)',
+              width: 72, height: 72, borderRadius: '50%', overflow: 'hidden',
+              border: '2.5px solid rgba(124,58,237,0.30)',
+              boxShadow: '0 0 0 5px rgba(124,58,237,0.08)',
             }}>
               {user?.avatar_url
                 ? <img src={user.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#7C3AED,#A78BFA)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#fff' }}>{initials}</div>
+                : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#7C3AED,#A78BFA)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: '#fff' }}>{initials}</div>
               }
             </div>
-            <div style={{ minWidth: 0 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: '#18181B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.name || 'You'}</p>
-              <p style={{ fontSize: 11, color: '#A1A1AA', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email || ''}</p>
+
+            {/* Name & email */}
+            <div style={{ textAlign: 'center', minWidth: 0, width: '100%' }}>
+              <p style={{ fontSize: 14, fontWeight: 800, color: '#18181B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.name || 'Profile'}</p>
+              <p style={{ fontSize: 11, color: '#A1A1AA', fontWeight: 500, marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email || ''}</p>
             </div>
-          </NavLink>
-          <button onClick={logout} title="Sign out" style={{
-            width: 32, height: 32, borderRadius: 10, background: 'transparent', border: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#D4D4D8', transition: 'all 0.2s', cursor: 'pointer', flexShrink: 0,
-          }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.08)' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#D4D4D8'; e.currentTarget.style.background = 'transparent' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path d="M16 3h4v18h-4M10 8l-5 4 5 4M5 12h13" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+          </div>
+        </NavLink>
+
+        {/* Spacer — pushes nav card to bottom */}
+        <div style={{ flex: 1 }} />
+
+        {/* ── Glassmorphism menu card ── */}
+        <div style={{
+          background: 'rgba(255,255,255,0.65)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(124,58,237,0.14)',
+          borderRadius: 20,
+          padding: '10px 8px',
+          marginBottom: 14,
+          boxShadow: '0 8px 32px rgba(124,58,237,0.10), 0 1px 4px rgba(0,0,0,0.04)',
+        }}>
+          <p style={{ fontSize: 9, fontWeight: 800, color: '#C4C4CC', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: 6, paddingLeft: 10 }}>Menu</p>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {NAV.map(({ to, icon, label }) => {
+              const isActive = to === '/' ? location.pathname === '/' : location.pathname.startsWith(to)
+              return (
+                <NavLink key={to} to={to} end={to === '/'} className={`nav-item ${isActive ? 'active' : ''}`}
+                  style={{ borderRadius: 12, fontSize: 13 }}>
+                  <span style={{ flexShrink: 0, opacity: isActive ? 1 : 0.50 }}>{icon}</span>
+                  {label}
+                  {isActive && <span className="nav-dot" />}
+                </NavLink>
+              )
+            })}
+          </nav>
         </div>
+
+        {/* ── Sign out ── */}
+        <button onClick={logout} title="Sign out" style={{
+          width: '100%', padding: '10px', borderRadius: 12,
+          background: 'transparent', border: '1px solid rgba(0,0,0,0.07)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          color: '#A1A1AA', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+          fontFamily: 'Urbanist,sans-serif', transition: 'all 0.2s',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.color='#EF4444'; e.currentTarget.style.borderColor='rgba(239,68,68,0.25)'; e.currentTarget.style.background='rgba(239,68,68,0.05)' }}
+          onMouseLeave={e => { e.currentTarget.style.color='#A1A1AA'; e.currentTarget.style.borderColor='rgba(0,0,0,0.07)'; e.currentTarget.style.background='transparent' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M16 3h4v18h-4M10 8l-5 4 5 4M5 12h13" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Sign out
+        </button>
       </aside>
 
       {/* ── Main ─────────────────────────────────────────────── */}
