@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080
     GROQ_API_KEY: str = ""
-    GEMINI_API_KEY: str = ""
     HF_TOKEN: str = ""
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
     UPLOAD_DIR: str = "app/uploads/avatars"
     MAX_AVATAR_SIZE_MB: int = 2
 
@@ -21,5 +21,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 settings = Settings()

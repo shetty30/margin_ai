@@ -1,6 +1,12 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: '/api' })
+// In production VITE_API_URL = "https://your-backend.onrender.com"
+// In dev, falls back to Vite proxy → '/api'
+const BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}`
+  : '/api'
+
+const api = axios.create({ baseURL: BASE })
 
 // Attach token to every request
 api.interceptors.request.use(cfg => {
