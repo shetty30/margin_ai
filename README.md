@@ -1,178 +1,118 @@
-# Margin AI 
+# Margin AI
 **Income − Savings = Your Margin**
 
-> A constraint-first personal finance app for India's urban professionals. Commit your savings upfront — the system derives what you can spend. AI answers questions from your actual data, not generic advice.
+> 🚧 App in progress
+
+AI-powered personal finance app built for India's urban professionals. Commit savings first — the system tells you what's left to spend.
 
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat&logo=fastapi&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-FFD21E?style=flat&logo=huggingface&logoColor=black)
 
 ---
 
-## The problem
+## The idea
 
-Most finance apps track spending after the fact. That's reactive and too late.
-
-Margin AI flips the model:
+Most apps track spending after the fact. Margin AI flips it.
 
 ```
-Income  −  Savings  =  Expense budget
+Income  −  Savings  =  What you can spend
 ```
 
-You protect savings first. The remaining amount is your margin — what you're allowed to spend. The AI enforces this contract and answers real questions from your real numbers.
+You protect savings first. The rest is your margin.
 
 ---
 
-## Features
+## What it does
 
-| Feature | Description |
-|---------|-------------|
-| 🔒 Constraint budgeting | Savings committed first, budget derived automatically |
-| 📩 SMS auto-import | Parses UPI bank SMS — covers HDFC, SBI, ICICI, Axis, Kotak |
-| ⚡ AI categoriser | Groq llama-3.1-8b tags every transaction instantly |
-| 💬 AI chat | Ask "where did my salary go?" — answered from live SQL data |
-| 🎯 Can I afford this? | Gemini checks budget, goals, and bills before answering |
-| 📊 Live dashboard | Spend by category, daily bar chart, savings rate |
-| 🎯 Goals tracker | Progress bars with on-track / behind status |
-| 👤 User profiles | Avatar upload, bio, financial setup |
+- 📩 **SMS auto-import** — reads UPI bank messages, logs transactions automatically
+- 🧠 **AI categoriser** — 3-stage NLP pipeline classifies every expense
+- 💬 **Chat with your finances** — ask anything, answered from your actual data
+- 🎯 **Can I afford this?** — AI checks your budget, goals, and bills before answering
+- 📊 **Live dashboard** — spending by category, daily chart, savings rate
+- 💰 **Income page** — set monthly income and savings target in one place
+- 👤 **User profiles** — avatar upload, financial setup, onboarding flow
 
 ---
 
-## Tech stack
+## AI architecture
 
+### Chatbot — Qwen2.5-7B-Instruct via HuggingFace
 ```
-Backend    →  Python 3.11 · FastAPI · SQLAlchemy · MySQL 8 · JWT Auth
-Frontend   →  React 18 · Vite · Tailwind CSS · SCSS · Recharts
-AI         →  Groq (llama-3.1-8b) · Gemini 1.5 Flash  — both free tier
+User message
+     ↓
+Live SQL context injection (budget, goals, recent transactions)
+     ↓
+Qwen/Qwen2.5-7B-Instruct  ←  HuggingFace Inference API
+     ↓                         (OpenAI-compatible endpoint)
+Context-aware answer
 ```
+Falls back to **Groq llama-3.1-8b** automatically if HuggingFace is unavailable.
 
 ---
 
-## Quick start
+### SMS categoriser — 3-stage NLP pipeline
+```
+Raw bank SMS
+     ↓
+Stage 1 — Regex
+Extracts amount, merchant, transaction type
 
-**Prerequisites:** Python 3.11+, MySQL 8, Node.js 18+
+     ↓
+Stage 2 — Keyword map (50+ merchants)
+Maps known names instantly  →  e.g. "Swiggy" → Food & Dining
 
-```bash
-# 1. Clone
-git clone https://github.com/yourusername/margin-ai.git
-cd margin-ai
-
-# 2. Backend
-cd backend
-python -m venv venv && source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# 3. Configure
-cp .env.example .env
-# Fill in: DB_PASSWORD, SECRET_KEY, GROQ_API_KEY, GEMINI_API_KEY
-
-# 4. Database
-# Open schema.sql in MySQL Workbench → run all
-python -m app.db.init_db
-
-# 5. Run backend
-uvicorn app.main:app --reload --port 8000
-
-# 6. Frontend (new terminal)
-cd ../frontend
-npm install && npm run dev
+     ↓
+Stage 3 — DistilBERT NLI (unknown merchants only)
+typeform/distilbert-base-uncased-mnli
+Zero-shot classification across 7 categories
+Food · Transport · Shopping · Entertainment · Health · Utilities · Misc
 ```
 
-**→ Backend:** `localhost:8000/docs`  
-**→ Frontend:** `localhost:5173`
-
-**Free API keys:**
-- Groq: [console.groq.com](https://console.groq.com)
-- Gemini: [aistudio.google.com](https://aistudio.google.com)
+Regex and keyword map handle ~90% of cases. DistilBERT only fires for unknown merchants — keeping it fast and free.
 
 ---
 
-## Architecture
+## Stack
 
 ```
-┌─────────────────┐     JWT      ┌──────────────────┐     SQL      ┌─────────┐
-│   React + Vite  │ ──────────▶  │  FastAPI Backend  │ ──────────▶ │ MySQL 8 │
-│   (port 5173)   │             │   (port 8000)     │             │         │
-└─────────────────┘             └──────────────────┘             └─────────┘
-                                         │
-                          ┌──────────────┴──────────────┐
-                          │                             │
-                    ┌─────▼─────┐               ┌──────▼──────┐
-                    │   Groq    │               │   Gemini    │
-                    │ llama-3.1 │               │ 1.5 Flash   │
-                    │ (tagging) │               │ (chat+calc) │
-                    └───────────┘               └─────────────┘
+Backend   →  Python · FastAPI · MySQL 8 · JWT
+Frontend  →  React · Vite · Tailwind · SCSS  ⚡ accelerated with Claude AI
+AI Chat   →  Qwen2.5-7B-Instruct (HuggingFace) · Groq llama-3.1-8b (fallback)
+NLP       →  typeform/distilbert-base-uncased-mnli (zero-shot NLI)
+SMS       →  Custom regex · 50+ merchant keyword map
 ```
 
 ---
 
-## Database schema
+## What changed
 
-```sql
-users            → profile, income, savings target, avatar
-transactions     → amount, merchant, category, method, date, source
-categories       → 7 defaults (Food, Transport, Shopping...)
-goals            → target, saved amount, deadline, status
-budget_configs   → monthly income/savings contracts
-monthly_reports  → AI-generated end-of-month insights
-```
-
-Key design decisions: composite index on `(user_id, txn_date)` for dashboard speed · CASCADE deletes for referential integrity · `source` ENUM tracks manual vs SMS vs import
+| Feature | Before | After |
+|---------|--------|-------|
+| Chatbot | Gemini 2.0 Flash | Qwen2.5-7B via HuggingFace + Groq fallback |
+| SMS categoriser | Groq LLM-based | Regex + keyword map + DistilBERT NLI |
+| Income setup | Profile page only | Dedicated income page |
 
 ---
 
-## API reference
+## Status
 
-```
-POST   /auth/register          Create account
-POST   /auth/login             Returns JWT
-
-GET    /profile/me             Full profile
-PATCH  /profile/me             Update details
-POST   /profile/me/avatar      Upload photo
-
-GET    /dashboard/             Aggregated financial summary
-GET    /transactions/          List by month + category
-POST   /transactions/parse-sms Parse UPI SMS → structured data
-
-POST   /ai/chat                Chat with your finances
-POST   /ai/afford              "Can I afford X?" analysis
-```
-
-Full interactive docs at `/docs` when running locally.
-
----
-
-## Relevance to finance
-
-This project applies core personal finance concepts in code:
-
-- **Cash flow management** — income, fixed costs, discretionary spend separation
-- **Savings rate tracking** — real-time % calculation against income
-- **Goal-based investing logic** — deadline-driven progress calculation
-- **Spend categorisation** — consistent taxonomy across 7 categories
-- **Behavioural nudges** — constraint-first design reduces overconsumption
-
----
-
-## Roadmap
-
-- [x] Core backend — schema, auth, REST API
-- [x] AI integration — SMS parser, categoriser, chat, afford calc
-- [x] Premium UI — glassmorphism, animations, dark theme
-- [x] User profiles with avatar upload
-- [ ] Monthly report stored procedure
-- [ ] Deploy — Railway (backend) + Vercel (frontend)
-- [ ] Android SMS bridge (READ_SMS)
+| Phase | Status |
+|-------|--------|
+| Backend API | ✅ Complete |
+| Database schema | ✅ Complete |
+| AI chat (Qwen + fallback) | ✅ Complete |
+| SMS NLP pipeline | ✅ Complete |
+| Frontend UI | ✅ Complete |
+| Income page | ✅ Complete |
+| Deployment | 🔜 Coming soon |
+| Android SMS bridge | 🔜 Coming soon |
 
 ---
 
 ## Built by
 
-**Shriya Shetty** 
-
----
-
-*Built to demonstrate applied full-stack development skills with a finance domain focus — relational database design, REST API architecture, AI integration, and production-grade UI.*
+**Shriya Shetty** · Finance Student  
+[GitHub](https://github.com/shetty30) · [LinkedIn](https://linkedin.com/in/yourprofile)
