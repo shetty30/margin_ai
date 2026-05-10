@@ -69,7 +69,7 @@ export const goals = {
 export const income = {
   list:   (year, month) => api.get(`/transactions/?year=${year}&month=${month}`)
     .then(r => ({ ...r, data: r.data.filter(t => parseFloat(t.amount) > 0) })),
-  create: (d) => api.post('/transactions/', { ...d, source: 'income' }),
+  create: (d) => api.post('/transactions/', { ...d, source: 'manual' }),
   delete: (id) => api.delete(`/transactions/${id}`),
 }
 

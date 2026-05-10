@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
+import Income from './pages/Income'
 import Goals from './pages/Goals'
 import Chat from './pages/Chat'
 import Profile from './pages/Profile'
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/" element={isAuth() ? <Layout /> : <Navigate to="/login" />}>
         <Route index element={<Dashboard />} />
         <Route path="transactions" element={<Transactions />} />
+        <Route path="income" element={<Income />} />
         <Route path="goals" element={<Goals />} />
         <Route path="chat" element={<Chat />} />
         <Route path="profile" element={<Profile />} />
