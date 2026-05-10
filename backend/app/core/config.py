@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080
     GROQ_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
+    HF_TOKEN: str = ""
     UPLOAD_DIR: str = "app/uploads/avatars"
     MAX_AVATAR_SIZE_MB: int = 2
 

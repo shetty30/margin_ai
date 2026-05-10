@@ -149,7 +149,7 @@ export default function Profile() {
         <h3 style={{ fontSize: 14, fontWeight: 800, color: '#18181B', marginBottom: 18 }}>Account details</h3>
         {[
           { label: 'Member since', value: new Date(user.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) },
-          { label: 'AI stack',     value: 'Groq llama-3.1-8b + Gemini 2.0 Flash' },
+          { label: 'AI stack',     value: 'Qwen2.5-7B-Instruct · DistilBERT NLI' },
           { label: 'Status',       value: user.onboarded ? '✓ Active' : 'Setup incomplete' },
         ].map((row, i) => (
           <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 2 ? '1px solid rgba(0,0,0,0.05)' : 'none' }}>
