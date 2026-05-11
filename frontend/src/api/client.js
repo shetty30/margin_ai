@@ -48,6 +48,10 @@ export const goals = {
   deposit: (id, amount) => api.patch(`/goals/${id}/deposit?amount=${amount}`),
 }
 
+export const categories = {
+  list: () => api.get('/categories/'),
+}
+
 export const ai = {
   chat: (message) => api.post('/ai/chat', { message }),
   afford: (question) => api.post('/ai/afford', { question }),
