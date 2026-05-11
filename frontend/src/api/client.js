@@ -52,6 +52,11 @@ export const categories = {
   list: () => api.get('/categories/'),
 }
 
+export const income = {
+  get: () => api.get('/profile/me'),
+  update: (d) => api.patch('/profile/me', d),
+}
+
 export const ai = {
   chat: (message) => api.post('/ai/chat', { message }),
   afford: (question) => api.post('/ai/afford', { question }),
