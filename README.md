@@ -1,118 +1,210 @@
-# Margin AI
-**Income − Savings = Your Margin**
+# Margin AI - Architecture Overview
 
-> 🚧 App in progress
+## System Architecture
 
-AI-powered personal finance app built for India's urban professionals. Commit savings first — the system tells you what's left to spend.
+```mermaid
+graph TB
+    subgraph Client["Client Layer"]
+        Mobile["📱 React Frontend<br/>Vite + Tailwind + SCSS"]
+        SMS["📨 SMS Auto-Import<br/>UPI Bank Messages"]
+    end
 
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)
-![HuggingFace](https://img.shields.io/badge/HuggingFace-FFD21E?style=flat&logo=huggingface&logoColor=black)
+    subgraph API["API Layer"]
+        FastAPI["🐍 FastAPI Backend<br/>Python 3.11<br/>JWT Authentication"]
+    end
 
----
+    subgraph Data["Data Layer"]
+        MySQL["🗄️ MySQL 8.0<br/>Transaction Store<br/>User Profiles<br/>Budget & Goals"]
+    end
 
-## The idea
+    subgraph AI["AI/ML Services"]
+        Chat["💬 Chat Service<br/>Qwen2.5-7B-Instruct<br/>HuggingFace API"]
+        Fallback["🔄 Fallback LLM<br/>Groq llama-3.1-8b"]
+        NLP["🧠 SMS Categoriser<br/>3-Stage Pipeline"]
+    end
 
-Most apps track spending after the fact. Margin AI flips it.
+    subgraph External["External Services"]
+        HF["🤗 HuggingFace<br/>Inference API"]
+        Groq["⚡ Groq<br/>LLM API"]
+        Distil["🔤 DistilBERT<br/>Zero-Shot NLI"]
+    end
 
-```
-Income  −  Savings  =  What you can spend
-```
+    Mobile -->|REST API| FastAPI
+    SMS -->|Raw SMS Text| FastAPI
+    FastAPI -->|Query/Insert| MySQL
+    FastAPI -->|User Message + Context| Chat
+    Chat -->|Primary| HF
+    Chat -->|Fallback| Groq
+    FastAPI -->|SMS Data| NLP
+    NLP -->|Unknown Merchants| Distil
+    Distil -->|Classification| MySQL
+    FastAPI -->|Response| Mobile
 
-You protect savings first. The rest is your margin.
-
----
-
-## What it does
-
-- 📩 **SMS auto-import** — reads UPI bank messages, logs transactions automatically
-- 🧠 **AI categoriser** — 3-stage NLP pipeline classifies every expense
-- 💬 **Chat with your finances** — ask anything, answered from your actual data
-- 🎯 **Can I afford this?** — AI checks your budget, goals, and bills before answering
-- 📊 **Live dashboard** — spending by category, daily chart, savings rate
-- 💰 **Income page** — set monthly income and savings target in one place
-- 👤 **User profiles** — avatar upload, financial setup, onboarding flow
-
----
-
-## AI architecture
-
-### Chatbot — Qwen2.5-7B-Instruct via HuggingFace
-```
-User message
-     ↓
-Live SQL context injection (budget, goals, recent transactions)
-     ↓
-Qwen/Qwen2.5-7B-Instruct  ←  HuggingFace Inference API
-     ↓                         (OpenAI-compatible endpoint)
-Context-aware answer
-```
-Falls back to **Groq llama-3.1-8b** automatically if HuggingFace is unavailable.
-
----
-
-### SMS categoriser — 3-stage NLP pipeline
-```
-Raw bank SMS
-     ↓
-Stage 1 — Regex
-Extracts amount, merchant, transaction type
-
-     ↓
-Stage 2 — Keyword map (50+ merchants)
-Maps known names instantly  →  e.g. "Swiggy" → Food & Dining
-
-     ↓
-Stage 3 — DistilBERT NLI (unknown merchants only)
-typeform/distilbert-base-uncased-mnli
-Zero-shot classification across 7 categories
-Food · Transport · Shopping · Entertainment · Health · Utilities · Misc
+    style Mobile fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    style FastAPI fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    style MySQL fill:#4479A1,stroke:#333,stroke-width:2px,color:#fff
+    style Chat fill:#FFD21E,stroke:#333,stroke-width:2px,color:#000
+    style Fallback fill:#FF6B6B,stroke:#333,stroke-width:2px,color:#fff
+    style NLP fill:#9C27B0,stroke:#333,stroke-width:2px,color:#fff
 ```
 
-Regex and keyword map handle ~90% of cases. DistilBERT only fires for unknown merchants — keeping it fast and free.
+## Component Breakdown
 
----
+### Frontend (75% JavaScript)
+- **Framework**: React 18 with Vite
+- **Styling**: Tailwind CSS + SCSS
+- **Features**:
+  - Live dashboard with spending analytics
+  - Chat interface for financial queries
+  - Income & savings setup page
+  - User profile with avatar upload
+  - Transaction history view
 
-## Stack
+### Backend (20% Python)
+- **Framework**: FastAPI (Python 3.11)
+- **Authentication**: JWT tokens
+- **API Endpoints**:
+  - User management & auth
+  - Transaction CRUD
+  - Budget & goals management
+  - Chat endpoint (with context injection)
+  - SMS processing & categorization
 
+### Database Layer (MySQL 8.0)
+- User profiles & authentication
+- Transaction history
+- Budget & savings goals
+- Chat message history
+- Cached categorization results
+
+## AI/ML Pipeline
+
+### SMS Categorisation - 3-Stage NLP Pipeline
+
+```mermaid
+graph LR
+    SMS["Raw Bank SMS<br/>e.g., 'Swiggy debit ₹450'"]
+    
+    Stage1["📌 Stage 1: Regex<br/>Amount + Merchant<br/>Transaction Type"]
+    
+    Stage2["🗺️ Stage 2: Keyword Map<br/>50+ Merchants<br/>Instant Match"]
+    
+    Stage3["🤖 Stage 3: DistilBERT NLI<br/>typeform/distilbert<br/>7-Category Zero-Shot"]
+    
+    Categories["🏷️ Categories<br/>Food · Transport<br/>Shopping · Entertainment<br/>Health · Utilities · Misc"]
+    
+    DB["💾 Store in MySQL"]
+    
+    SMS -->|Extract| Stage1
+    Stage1 -->|Match Known?| Stage2
+    Stage2 -->|Unknown?| Stage3
+    Stage3 -->|Classify| Categories
+    Categories -->|Persist| DB
+
+    style SMS fill:#FFE082,stroke:#333,stroke-width:2px
+    style Stage1 fill:#81C784,stroke:#333,stroke-width:2px,color:#fff
+    style Stage2 fill:#64B5F6,stroke:#333,stroke-width:2px,color:#fff
+    style Stage3 fill:#9C27B0,stroke:#333,stroke-width:2px,color:#fff
+    style Categories fill:#FF7043,stroke:#333,stroke-width:2px,color:#fff
+    style DB fill:#4479A1,stroke:#333,stroke-width:2px,color:#fff
 ```
-Backend   →  Python · FastAPI · MySQL 8 · JWT
-Frontend  →  React · Vite · Tailwind · SCSS  ⚡ accelerated with Claude AI
-AI Chat   →  Qwen2.5-7B-Instruct (HuggingFace) · Groq llama-3.1-8b (fallback)
-NLP       →  typeform/distilbert-base-uncased-mnli (zero-shot NLI)
-SMS       →  Custom regex · 50+ merchant keyword map
+
+**Efficiency**: Regex + keyword map handle ~90% of cases. DistilBERT only fires for unknown merchants—keeping it fast and free.
+
+### Chat with Context - Qwen2.5-7B-Instruct
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant FastAPI
+    participant MySQL
+    participant Qwen as HuggingFace<br/>Qwen2.5-7B
+    participant Groq
+
+    User->>FastAPI: "Can I afford a ₹5000 flight?"
+    FastAPI->>MySQL: Fetch user budget, goals,<br/>recent transactions, balance
+    MySQL-->>FastAPI: Context data
+    FastAPI->>Qwen: User message +<br/>SQL context injection
+    alt HuggingFace Available
+        Qwen-->>FastAPI: Context-aware answer
+    else HuggingFace Unavailable
+        FastAPI->>Groq: Fallback to<br/>llama-3.1-8b
+        Groq-->>FastAPI: Response
+    end
+    FastAPI-->>User: Answer with reasoning
 ```
 
----
+## Data Flow - Income to Margin
 
-## What changed
+```mermaid
+graph TB
+    Income["💰 Monthly Income<br/>Set by user"]
+    Savings["🏦 Savings Target<br/>Set by user"]
+    
+    Calc["📐 Calculate Margin"]
+    
+    Margin["✨ Your Margin<br/>Income - Savings = Spend"]
+    
+    SMS["📨 SMS Transactions"]
+    Categorise["🏷️ Auto-Categorise"]
+    Track["📊 Track Spending"]
+    
+    Spending["💸 Current Spending"]
+    Budget["📈 Budget Check"]
+    
+    Income -->|Input| Calc
+    Savings -->|Input| Calc
+    Calc -->|Output| Margin
+    
+    SMS -->|Capture| Categorise
+    Categorise -->|Store| Track
+    Track -->|Aggregate| Spending
+    Margin -->|Limit| Budget
+    Spending -->|Compare| Budget
+    Budget -->|Alert| User["👤 User Notified"]
 
-| Feature | Before | After |
-|---------|--------|-------|
-| Chatbot | Gemini 2.0 Flash | Qwen2.5-7B via HuggingFace + Groq fallback |
-| SMS categoriser | Groq LLM-based | Regex + keyword map + DistilBERT NLI |
-| Income setup | Profile page only | Dedicated income page |
+    style Income fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
+    style Savings fill:#2196F3,stroke:#333,stroke-width:2px,color:#fff
+    style Margin fill:#FF9800,stroke:#333,stroke-width:2px,color:#fff
+    style Spending fill:#F44336,stroke:#333,stroke-width:2px,color:#fff
+```
 
----
+## Technology Stack Summary
 
-## Status
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | React 18, Vite, Tailwind, SCSS | UI/UX for spending dashboard & chat |
+| **Backend** | FastAPI, Python 3.11, JWT | REST API, business logic, auth |
+| **Database** | MySQL 8.0 | Persistent storage |
+| **Chat AI** | Qwen2.5-7B (HuggingFace) | Natural language financial answers |
+| **Fallback** | Groq llama-3.1-8b | Backup LLM if HF unavailable |
+| **NLP** | DistilBERT (zero-shot) | Transaction categorization |
+| **SMS** | Custom regex + keyword map | Parse bank messages |
 
-| Phase | Status |
-|-------|--------|
+## Deployment Status
+
+| Component | Status |
+|-----------|--------|
 | Backend API | ✅ Complete |
-| Database schema | ✅ Complete |
-| AI chat (Qwen + fallback) | ✅ Complete |
-| SMS NLP pipeline | ✅ Complete |
+| Database Schema | ✅ Complete |
 | Frontend UI | ✅ Complete |
-| Income page | ✅ Complete |
-| Deployment | 🔜 Coming soon |
-| Android SMS bridge | 🔜 Coming soon |
+| AI Chat (Qwen + Fallback) | ✅ Complete |
+| SMS NLP Pipeline | ✅ Complete |
+| Income Page | ✅ Complete |
+| Production Deployment | 🔜 Coming soon |
+| Android SMS Bridge | 🔜 Coming soon |
+
+## Language Composition
+
+```mermaid
+pie title Margin AI Codebase
+    "JavaScript" : 75
+    "Python" : 20.6
+    "CSS" : 4.1
+    "Other" : 0.3
+```
 
 ---
 
-## Built by
-
-**Shriya Shetty** · Finance Student  
-[GitHub](https://github.com/shetty30) · [LinkedIn](https://linkedin.com/in/yourprofile)
+**Built by**: Shriya Shetty · Finance Student  
+**Repository**: [shetty30/margin_ai](https://github.com/shetty30/margin_ai)
