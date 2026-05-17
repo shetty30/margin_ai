@@ -43,6 +43,11 @@ def patch_profile(data: ProfileUpdate, db: Session=Depends(get_db), user: User=D
     updated = update_profile(db, user, data.model_dump(exclude_none=True))
     return user_to_dict(updated)
 
+@router.patch("/me/onboard")
+def onboard_profile(data: ProfileUpdate, db: Session=Depends(get_db), user: User=Depends(get_current_user)):
+    updated = update_profile(db, user, data.model_dump(exclude_none=True))
+    return user_to_dict(updated)
+
 @router.post("/avatar")
 async def upload_avatar_route(
     file: UploadFile = File(...),
